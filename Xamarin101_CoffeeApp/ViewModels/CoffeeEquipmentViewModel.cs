@@ -1,16 +1,32 @@
-﻿using System;
+﻿using MvvmHelpers;
+using MvvmHelpers.Commands;
 using System.Collections.Generic;
-using System.Text;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using System.Windows.Input;
-using Xamarin.Forms;
 
 namespace Xamarin101_CoffeeApp.ViewModels
 {
-    public class CoffeeEquipmentViewModel : BindableObject
+    public class CoffeeEquipmentViewModel : ViewModelBase
     {
         public CoffeeEquipmentViewModel()
         {
             IncreaseCount = new Command(OnIncrease);
+            callServerCommand = new AsyncCommand(CallServer);
+            Coffee = new ObservableRangeCollection<string>();
+            Title = "Coffee Equipment";
+        }
+
+        public ObservableRangeCollection<string> Coffee { get; }
+
+        public ICommand callServerCommand { get; }
+
+        async Task CallServer()
+        {
+            // Demonstraiting MVVM Helpers AsyncCommand
+            Coffee.Add("Mocha");
+            Coffee.Add("Cappochino");
+            Coffee.AddRange(new List<string> { "Americano", "Black" }); // ObservableRangeCollection only
         }
 
         int count = 0;
@@ -27,16 +43,7 @@ namespace Xamarin101_CoffeeApp.ViewModels
         public string CountDisplay
         {
             get => countDisplay;
-            set
-            {
-                if (value == countDisplay)
-                {
-                    return;
-                }
-
-                countDisplay = value;
-                OnPropertyChanged(nameof(CountDisplay)); // or just OnPropertyChanged();
-            }
+            set => SetProperty(ref countDisplay, value);
         }
     }
 }
