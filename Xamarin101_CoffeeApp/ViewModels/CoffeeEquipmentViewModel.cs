@@ -2,6 +2,7 @@
 using MvvmHelpers.Commands;
 using System.Linq;
 using System.Threading.Tasks;
+using Xamarin.Forms;
 using Xamarin101_CoffeeApp.Models;
 
 namespace Xamarin101_CoffeeApp.ViewModels
@@ -11,6 +12,7 @@ namespace Xamarin101_CoffeeApp.ViewModels
         public ObservableRangeCollection<Coffee> Coffee { get; set; }
         public ObservableRangeCollection<Grouping<string, Coffee>> CoffeeGroups { get; }
         public AsyncCommand RefreshCommand { get; }
+        public AsyncCommand<Coffee> FavouriteCommand { get; }
 
         public CoffeeEquipmentViewModel()
         {
@@ -22,6 +24,7 @@ namespace Xamarin101_CoffeeApp.ViewModels
             LoadCoffees();
 
             RefreshCommand = new AsyncCommand(Refresh);
+            FavouriteCommand = new AsyncCommand<Coffee>(Favourite);
         }
 
         void LoadCoffees()
@@ -37,6 +40,26 @@ namespace Xamarin101_CoffeeApp.ViewModels
             CoffeeGroups.Add(new Grouping<string, Coffee>("Yes Plz", Coffee.Where(c => c.Roaster.Equals("Yes Plz"))));
         }
 
+        Coffee previousCoffee;
+        Coffee selectedCoffee;
+
+        public Coffee SelectedCoffee
+        {
+            get => selectedCoffee;
+            set
+            {
+                if (value != null)
+                {
+                    Application.Current.MainPage.DisplayAlert("Selected Coffee", value.Name, "Ok");
+                    previousCoffee = value;
+                    value = null;
+                }
+
+                selectedCoffee = value;
+                OnPropertyChanged();
+            }
+        }
+
         async Task Refresh()
         {
             IsBusy = true;
@@ -44,6 +67,17 @@ namespace Xamarin101_CoffeeApp.ViewModels
             await Task.Delay(2000);
 
             IsBusy = false;
+        }
+
+        async Task Favourite(Coffee coffee)
+        {
+            if (coffee == null)
+            {
+                return;
+            }
+
+            await Application.Current.MainPage.DisplayAlert("Fovourite Coffee", coffee.Name, "Ok");
+            previousCoffee = coffee;
         }
     }
 }

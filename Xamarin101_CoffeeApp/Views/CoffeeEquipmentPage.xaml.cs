@@ -13,6 +13,7 @@ namespace Xamarin101_CoffeeApp.Views
             InitializeComponent();
         }
 
+        /*
         private async void ListView_ItemSelected(object sender, SelectedItemChangedEventArgs e)
         {
             var coffee = ((ListView)sender).SelectedItem as Coffee;
@@ -41,5 +42,6 @@ namespace Xamarin101_CoffeeApp.Views
 
             await DisplayAlert("Coffee Fovourite", coffee.Name, "Ok");
         }
+        */
     }
 }

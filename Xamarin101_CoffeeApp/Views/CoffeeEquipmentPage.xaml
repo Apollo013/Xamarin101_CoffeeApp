@@ -5,24 +5,24 @@
              xmlns:model="clr-namespace:Xamarin101_CoffeeApp.Models"
              x:Class="Xamarin101_CoffeeApp.Views.CoffeeEquipmentPage"
              x:DataType="vm:CoffeeEquipmentViewModel"
+             x:Name="CoffeePage"
              BackgroundColor="White">
     <ContentPage.BindingContext>
         <vm:CoffeeEquipmentViewModel/>
     </ContentPage.BindingContext>
 
-    <ListView CachingStrategy="RecycleElement"
-              BackgroundColor="Transparent" 
-              ItemsSource="{Binding CoffeeGroups}" 
-              IsGroupingEnabled="True"
+    <ListView BackgroundColor="Transparent"
+              CachingStrategy="RecycleElement" 
               GroupDisplayBinding="{Binding Key}"
-              HasUnevenRows="True" 
-              SeparatorVisibility="None"
+              HasUnevenRows="True"               
+              IsGroupingEnabled="True"
               IsPullToRefreshEnabled="True"
-              IsRefreshing="{Binding IsBusy, Mode=OneWay}"
-              RefreshCommand="{Binding RefreshCommand}"
-              RefreshControlColor="Red"
-              ItemSelected="ListView_ItemSelected"
-              ItemTapped="ListView_ItemTapped">
+              RefreshControlColor="Red"      
+              IsRefreshing="{Binding IsBusy, Mode=OneWay}"    
+              ItemsSource="{Binding CoffeeGroups}" 
+              RefreshCommand="{Binding RefreshCommand}"   
+              SelectedItem="{Binding SelectedCoffee, Mode=TwoWay}"
+              SeparatorVisibility="None">
         <ListView.Header>
             <StackLayout Orientation="Horizontal" Padding="10">
                 <Label Text="Coffees Of The World" TextColor="Firebrick"/>
@@ -32,8 +32,12 @@
             <DataTemplate x:DataType="model:Coffee">
                 <ViewCell>
                     <ViewCell.ContextActions>
-                        <MenuItem Text="Favourite" Clicked="MenuItem_Clicked"/>
-                        <MenuItem Text="Delete"/>
+                        <!-- Reference Any Object On The Page for Binding -->
+                        <MenuItem
+                            Command="{Binding Source={x:Reference CoffeePage}, Path=BindingContext.FavouriteCommand}"
+                            CommandParameter="{Binding .}"
+                            Text="Favorite" />
+                        <MenuItem IsDestructive="True" Text="Delete" />
                     </ViewCell.ContextActions>
                     <Grid Padding="10">
                         <Frame CornerRadius="20" HasShadow="True">
@@ -43,6 +47,10 @@
                                     <Label VerticalOptions="Center" FontSize="Large" Text="{Binding Name}"/>
                                     <Label VerticalOptions="Center" FontSize="Large" Text="{Binding Roaster}"/>
                                 </StackLayout>
+                                <!-- Reference a specific Object for Binding (View Model) -->
+                                <Button Text="Favorite"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CoffeeEquipmentViewModel}}, Path=FavouriteCommand}"
+                                        CommandParameter="{Binding .}" />
                             </StackLayout>
                         </Frame>
                     </Grid>
@@ -50,13 +58,23 @@
             </DataTemplate>
         </ListView.ItemTemplate>
         <ListView.Footer>
-            <StackLayout Orientation="Horizontal">
-                <Label BackgroundColor="Orange" Text="Footer" TextColor="Firebrick"/>
+            <StackLayout HorizontalOptions="Center" Orientation="Horizontal">
+                <Button Text="Load More" />
             </StackLayout>
         </ListView.Footer>
     </ListView>
 </ContentPage>
 
+
+    <!-- 
+        Menu Item Bound to clicked event
+        <ViewCell.ContextActions>
+            <MenuItem Text="Favourite" Clicked="MenuItem_Clicked"/>
+            <MenuItem Text="Delete"/>
+        </ViewCell.ContextActions>
+    -->
+    <!--ItemSelected="ListView_ItemSelected"-->
+    
     <!--
         <DataTemplate>
             <ImageCell Text="{Binding Name}" Detail="{Binding Roaster}" ImageSource="{Binding Image}"/>
