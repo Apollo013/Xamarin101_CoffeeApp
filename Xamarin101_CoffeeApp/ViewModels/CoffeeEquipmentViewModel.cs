@@ -1,49 +1,49 @@
 ﻿using MvvmHelpers;
 using MvvmHelpers.Commands;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Input;
+using Xamarin101_CoffeeApp.Models;
 
 namespace Xamarin101_CoffeeApp.ViewModels
 {
     public class CoffeeEquipmentViewModel : ViewModelBase
     {
+        public ObservableRangeCollection<Coffee> Coffee { get; set; }
+        public ObservableRangeCollection<Grouping<string, Coffee>> CoffeeGroups { get; }
+        public AsyncCommand RefreshCommand { get; }
+
         public CoffeeEquipmentViewModel()
         {
-            IncreaseCount = new Command(OnIncrease);
-            callServerCommand = new AsyncCommand(CallServer);
-            Coffee = new ObservableRangeCollection<string>();
             Title = "Coffee Equipment";
+            
+            Coffee = new ObservableRangeCollection<Coffee>();
+            CoffeeGroups = new ObservableRangeCollection<Grouping<string, Coffee>>();
+
+            LoadCoffees();
+
+            RefreshCommand = new AsyncCommand(Refresh);
         }
 
-        public ObservableRangeCollection<string> Coffee { get; }
-
-        public ICommand callServerCommand { get; }
-
-        async Task CallServer()
+        void LoadCoffees()
         {
-            // Demonstraiting MVVM Helpers AsyncCommand
-            Coffee.Add("Mocha");
-            Coffee.Add("Cappochino");
-            Coffee.AddRange(new List<string> { "Americano", "Black" }); // ObservableRangeCollection only
+            var image = "https://www.yesplz.coffee/app/uploads/2020/11/emptybag-min.png";
+            Coffee.Add(new Coffee { Roaster = "Yes Plz", Name = "Sip of Sunshine", Image = image });
+            Coffee.Add(new Coffee { Roaster = "Yes Plz", Name = "Potent Potable", Image = image });
+            Coffee.Add(new Coffee { Roaster = "Yes Plz", Name = "Potent Potable 2", Image = image });
+            Coffee.Add(new Coffee { Roaster = "Blue Bottle", Name = "Kenya Kiambu Handege Gold", Image = image });
+            Coffee.Add(new Coffee { Roaster = "Blue Bottle", Name = "Kenya Kiambu Handege Original", Image = image });
+
+            CoffeeGroups.Add(new Grouping<string, Coffee>("Blue Bottle", Coffee.Where(c => c.Roaster.Equals("Blue Bottle"))));
+            CoffeeGroups.Add(new Grouping<string, Coffee>("Yes Plz", Coffee.Where(c => c.Roaster.Equals("Yes Plz"))));
         }
 
-        int count = 0;
-        string countDisplay = "Click The Button";
-
-        private void OnIncrease()
+        async Task Refresh()
         {
-            count++;
-            CountDisplay = $"You clicked {count} time(s)";
-        }
+            IsBusy = true;
 
-        public ICommand IncreaseCount { get; }
+            await Task.Delay(2000);
 
-        public string CountDisplay
-        {
-            get => countDisplay;
-            set => SetProperty(ref countDisplay, value);
+            IsBusy = false;
         }
     }
 }

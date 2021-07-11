@@ -1,24 +1,106 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:vm="clr-namespace:Xamarin101_CoffeeApp.ViewModels"
+             xmlns:vm="clr-namespace:Xamarin101_CoffeeApp.ViewModels" 
+             xmlns:model="clr-namespace:Xamarin101_CoffeeApp.Models"
              x:Class="Xamarin101_CoffeeApp.Views.CoffeeEquipmentPage"
-             x:DataType="vm:CoffeeEquipmentViewModel">
+             x:DataType="vm:CoffeeEquipmentViewModel"
+             BackgroundColor="White">
     <ContentPage.BindingContext>
         <vm:CoffeeEquipmentViewModel/>
     </ContentPage.BindingContext>
-    <ContentPage.Content>
-        <Grid RowDefinitions="*,Auto">
-            <Label 
-                x:Name="LabelCount"
-                Text="{Binding CountDisplay}"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
 
-            <Button x:Name="ButtonClick" 
-                    Command="{Binding IncreaseCount}"
-                    Grid.Row="1" 
-                    Text="Click Me"/>
-        </Grid>
-    </ContentPage.Content>
+    <ListView CachingStrategy="RecycleElement"
+              BackgroundColor="Transparent" 
+              ItemsSource="{Binding CoffeeGroups}" 
+              IsGroupingEnabled="True"
+              GroupDisplayBinding="{Binding Key}"
+              HasUnevenRows="True" 
+              SeparatorVisibility="None"
+              IsPullToRefreshEnabled="True"
+              IsRefreshing="{Binding IsBusy, Mode=OneWay}"
+              RefreshCommand="{Binding RefreshCommand}"
+              RefreshControlColor="Red"
+              ItemSelected="ListView_ItemSelected"
+              ItemTapped="ListView_ItemTapped">
+        <ListView.Header>
+            <StackLayout Orientation="Horizontal" Padding="10">
+                <Label Text="Coffees Of The World" TextColor="Firebrick"/>
+            </StackLayout>
+        </ListView.Header>
+        <ListView.ItemTemplate>
+            <DataTemplate x:DataType="model:Coffee">
+                <ViewCell>
+                    <ViewCell.ContextActions>
+                        <MenuItem Text="Favourite" Clicked="MenuItem_Clicked"/>
+                        <MenuItem Text="Delete"/>
+                    </ViewCell.ContextActions>
+                    <Grid Padding="10">
+                        <Frame CornerRadius="20" HasShadow="True">
+                            <StackLayout Orientation="Horizontal">
+                                <Image Source="{Binding Image}" WidthRequest="66"/>
+                                <StackLayout VerticalOptions="Center">
+                                    <Label VerticalOptions="Center" FontSize="Large" Text="{Binding Name}"/>
+                                    <Label VerticalOptions="Center" FontSize="Large" Text="{Binding Roaster}"/>
+                                </StackLayout>
+                            </StackLayout>
+                        </Frame>
+                    </Grid>
+                </ViewCell>
+            </DataTemplate>
+        </ListView.ItemTemplate>
+        <ListView.Footer>
+            <StackLayout Orientation="Horizontal">
+                <Label BackgroundColor="Orange" Text="Footer" TextColor="Firebrick"/>
+            </StackLayout>
+        </ListView.Footer>
+    </ListView>
 </ContentPage>
+
+    <!--
+        <DataTemplate>
+            <ImageCell Text="{Binding Name}" Detail="{Binding Roaster}" ImageSource="{Binding Image}"/>
+        </DataTemplate>
+    -->
+
+    <!--
+        Linear List Only (Non Grouped)
+        <ListView 
+            BackgroundColor="Transparent" 
+            ItemsSource="{Binding Coffee}" 
+            HasUnevenRows="True" 
+            SeparatorVisibility="None">
+    
+            <ListView.Header>
+                <StackLayout Orientation="Horizontal" Padding="10">
+                    <Label Text="Coffees Of The World" TextColor="Firebrick"/>
+                </StackLayout>
+            </ListView.Header>
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="model:Coffee">
+                    <ViewCell>
+                        <ViewCell.ContextActions>
+                            <MenuItem Text="Favourite"/>
+                            <MenuItem Text="Delete"/>
+                        </ViewCell.ContextActions>
+                        <Grid Padding="10">
+                            <Frame CornerRadius="20" HasShadow="True">
+                                <StackLayout Orientation="Horizontal">
+                                    <Image Source="{Binding Image}" WidthRequest="66"/>
+                                    <StackLayout VerticalOptions="Center">
+                                        <Label VerticalOptions="Center" FontSize="Large" Text="{Binding Name}"/>
+                                        <Label VerticalOptions="Center" FontSize="Large" Text="{Binding Roaster}"/>
+                                    </StackLayout>
+                                </StackLayout>
+                            </Frame>
+                        </Grid>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            <ListView.Footer>
+                <StackLayout Orientation="Horizontal">
+                    <Label BackgroundColor="Orange" Text="Footer" TextColor="Firebrick"/>
+                </StackLayout>
+            </ListView.Footer>
+        </ListView>    
+    -->
