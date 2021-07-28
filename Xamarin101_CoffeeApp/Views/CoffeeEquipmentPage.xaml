@@ -47,7 +47,7 @@
                                     <Label VerticalOptions="Center" FontSize="Large" Text="{Binding Name}"/>
                                     <Label VerticalOptions="Center" FontSize="Large" Text="{Binding Roaster}"/>
                                 </StackLayout>
-                                <!-- Reference a specific Object for Binding (View Model) -->
+                                <!-- Reference a specific Type for Binding (View Model) -->
                                 <Button Text="Favorite"
                                         Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CoffeeEquipmentViewModel}}, Path=FavouriteCommand}"
                                         CommandParameter="{Binding .}" />

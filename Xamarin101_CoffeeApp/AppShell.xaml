@@ -82,4 +82,8 @@
         <ShellContent Route="Equipment" ContentTemplate="{DataTemplate local:CoffeeEquipmentPage}" />
     </FlyoutItem>
 
+    <FlyoutItem Title="Equipment (Collection View)" Icon="icon_about.png">
+        <ShellContent Route="Equipment" ContentTemplate="{DataTemplate local:CoffeeEquipmentCVPage}" />
+    </FlyoutItem>
+    
 </Shell>
